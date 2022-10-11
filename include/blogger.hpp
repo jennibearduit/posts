@@ -3,6 +3,9 @@
 
 #include <string>
 
+#include "rating.hpp"
+#include "post.hpp"
+
 class [[eosio::contract("blogger")]] blogger : public eosio::contract {
    public:
       using eosio::contract::contract;
