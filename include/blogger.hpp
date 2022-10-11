@@ -1,11 +1,10 @@
 #include <eosio/eosio.hpp>
-using namespace eosio;
 
-CONTRACT blogger : public contract {
+#include <string>
+
+class [[eosio::contract("blogger")]] blogger : public eosio::contract {
    public:
-      using contract::contract;
+      using eosio::contract::contract;
 
-      ACTION hi( name nm );
-
-      using hi_action = action_wrapper<"hi"_n, &blogger::hi>;
+      [[eosio::action]] void addpost(eosio::name user, std::string post);
 };
