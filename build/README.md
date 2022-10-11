@@ -1,0 +1,5 @@
+To compile:
+```
+cmake ..
+make
+```
