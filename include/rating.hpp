@@ -2,7 +2,7 @@
 #define RATING
 
 class [[eosio::table, eosio::contract("blogger")]] rating {
-  public:
+  private:
     uint64_t rating_id;
     uint64_t post_id;
     eosio::name user;
