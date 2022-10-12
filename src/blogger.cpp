@@ -1,6 +1,11 @@
 #include <blogger.hpp>
 
-void blogger::addpost(eosio::name user, std::string post){
+void blogger::addpost(eosio::name user, std::string content){
+    deal_table table(_self, _self.value);
+    deal tmp_post(table.available_primary_key(), user, content);
+    table.emplace(_self, [&](auto & entry) { 
+        entry = tmp_post; 
+    })
 }
 void blogger::deletepost(uint64_t id, eosio::name user){
 }
