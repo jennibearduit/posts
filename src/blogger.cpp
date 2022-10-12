@@ -13,7 +13,7 @@ void blogger::deletepost(uint64_t id, eosio::name user){
     deal_table table(_self, _self.value);
     auto itr = table.find(id);
     eosio::check(itr != table.end(), "A post does not exist with this ID");
-    eosio::check(has_auth(itr->get_user()) || has_auth(_self), "Missing authority to cancel this deal");
+    eosio::check(has_auth(itr->get_user()) || has_auth(_self), "Missing authority to delete this post");
     table.erase(itr);
 }
 void blogger::ratepost(uint64_t id, eosio::name user, int rating){
