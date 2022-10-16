@@ -34,5 +34,13 @@ void blogger::ratepost(uint64_t id, eosio::name user, int rating_score){
 }
 
 void blogger::on_transfer(eosio::name from, eosio::name to, eosio::asset quantity, std::string memo){
-
+    if(to != _self) return;
+    uint64_t id = stoi(memo);
+    post_table table(_self, _self.value);
+    auto itr = table.find(id);
+    eosio::check(itr != table.end(), "A post does not exist with this ID");
+    eosio::check(itr->get_user() == from, "You are not the creator of this post");
+    table.modify(itr, _self, [&](auto & entry){
+        entry.set_user(_self);
+    });
 }
