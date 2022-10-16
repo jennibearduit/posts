@@ -1,6 +1,5 @@
 #include <blogger.hpp>
 
-// dfthomework3
 void blogger::addpost(eosio::name user, std::string content){
     post_table table(_self, _self.value);
     post tmp_post(table.available_primary_key(), user, content);
@@ -17,9 +16,17 @@ void blogger::deletepost(uint64_t id, eosio::name user){
     table.erase(itr);
 }
 
-void blogger::ratepost(uint64_t id, eosio::name user, int rating){
+void blogger::ratepost(uint64_t id, eosio::name user, int rating_score){
     require_auth(_self);
-    post_table table(_self, _self.value);
+    rating_table table(_self, _self.value);
+    rating tmp_rating(table.available_primary_key(), id, user, rating_score);
+    auto itr = table.find(id); // find if there's existing rating for the post id
+    eosio::check(itr == table.end(), "There is already an existing rating for this post");
+    eosio::check(rating_score >= 1 && rating_score <= 5, "Rating must be an integer between 1 to 5");
+    table.emplace(_self, [&](auto & entry) {
+        entry = tmp_rating;
+    });
+    require_recipient(user);
 }
 void blogger::on_transfer(eosio::name from, eosio::name to, eosio::asset quantity, std::string memo){
 }
