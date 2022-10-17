@@ -25,18 +25,12 @@ void blogger::ratepost(uint64_t id, eosio::name user, int rating){
         eosio::check(itr->get_post_id() != id, "There is already an existing rating for this post by user");
         ++ itr;
     }
-    itr = table.begin();
-    while (itr != table.end()) {
-            if (itr->primary_key() == id) break;
-            ++ itr;
-    }
     eosio::check(itr != table.end(), "The post does not exist");
     eosio::check(rating >= 1 && rating <= 5, "Rating must be an integer between 1 to 5");
     class rating tmp_rating(table.available_primary_key(), id, user, rating);
     table.emplace(_self, [&](auto & entry) {
         entry = tmp_rating;
     });
-    require_recipient(itr->get_user());
 }
 
 void blogger::on_transfer(eosio::name from, eosio::name to, eosio::asset quantity, std::string memo){
@@ -49,4 +43,5 @@ void blogger::on_transfer(eosio::name from, eosio::name to, eosio::asset quantit
     table.modify(itr, _self, [&](auto & entry){
         entry.set_user(to);
     });
+
 }
