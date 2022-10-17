@@ -30,7 +30,8 @@ void blogger::ratepost(uint64_t id, eosio::name user, int rating){
     table.emplace(_self, [&](auto & entry) {
         entry = tmp_rating;
     });
-    // TODO: inform post creator
+    auto
+    // TODO: INFORM POST CREATOR
 }
 
 void blogger::on_transfer(eosio::name from, eosio::name to, eosio::asset quantity, std::string memo){
