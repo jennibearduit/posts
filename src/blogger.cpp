@@ -13,7 +13,7 @@ void blogger::deletepost(uint64_t id, eosio::name user){
     post_table table(_self, _self.value);
     auto itr = table.find(id);
     eosio::check(itr != table.end(), "A post does not exist with this ID");
-    eosio::check(itr->get_user() == user, "Missing authority to delete this post");
+    eosio::check(itr->user == user, "Missing authority to delete this post");
     table.erase(itr);
 }
 
