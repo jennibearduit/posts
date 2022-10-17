@@ -25,7 +25,7 @@ void blogger::ratepost(uint64_t id, eosio::name user, int rating){
     rating_table r_table(_self, _self.value);
     auto r_itr = r_table.begin();
     while (r_itr != r_table.end()) {
-        eosio::check(!(r_itr->get_post_id() == id && r_itr->get_user() == user),
+        eosio::check(!(r_itr->post_id == id && r_itr->user == user),
             "There is already an existing rating for this post by user");
         ++ r_itr;
     }
