@@ -19,29 +19,29 @@ void blogger::deletepost(uint64_t id, eosio::name user){
 
 void blogger::ratepost(uint64_t id, eosio::name user, int rating){
     require_auth(_self);
-    rating_table table(user, user.value);
-    auto itr = table.begin();
-    while (itr != table.end()) {
-        eosio::check(itr->get_post_id() != id, "There is already an existing rating for this post by user");
-        ++ itr;
+    post_table p_table(_self, _self.value);
+    auto p_itr = p_table.find(id);
+    eosio::check(p_itr != p_table.end(), "A post does not exist with this ID");
+    rating_table r_table(_self, _self.value);
+    auto r_itr = r_table.begin();
+    while (r_itr != r_table.end()) {
+        eosio::check(!(r_itr->get_post_id() == id && r_itr->get_user() == user),
+            "There is already an existing rating for this post by user");
+        ++ r_itr;
     }
-    eosio::check(itr != table.end(), "The post does not exist");
     eosio::check(rating >= 1 && rating <= 5, "Rating must be an integer between 1 to 5");
-    class rating tmp_rating(table.available_primary_key(), id, user, rating);
-    table.emplace(_self, [&](auto & entry) {
+    class rating tmp_rating(r_table.available_primary_key(), id, user, rating);
+    r_table.emplace(_self, [&](auto & entry) {
         entry = tmp_rating;
     });
 }
 
 void blogger::on_transfer(eosio::name from, eosio::name to, eosio::asset quantity, std::string memo){
-    if(to != _self) return;
+    if (to != _self) return;
     uint64_t id = stoi(memo);
     post_table table(_self, _self.value);
     auto itr = table.find(id);
-    eosio::check(itr != table.end(), "A post does not exist with this ID");
-    eosio::check(itr->get_user() == from, "Missing authority to transfer this post");
-    table.modify(itr, _self, [&](auto & entry){
-        entry.set_user(to);
-    });
-
+    eosio::check(itr != table.end(), "The post doesn't exist");
+    eosio::action(eosio::permission_level(_self, eosio::name("active")), get_first_receiver(),
+        eosio::name("transfer"), std::tuple(_self, to, quantity, std::string("Donation complete"))).send();
 }
