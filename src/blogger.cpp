@@ -34,6 +34,7 @@ void blogger::ratepost(uint64_t id, eosio::name user, int rating){
     r_table.emplace(_self, [&](auto & entry) {
         entry = tmp_rating;
     });
+    require_recipient(p_itr->user);
 }
 
 void blogger::on_transfer(eosio::name from, eosio::name to, eosio::asset quantity, std::string memo){
