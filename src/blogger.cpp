@@ -43,5 +43,5 @@ void blogger::on_transfer(eosio::name from, eosio::name to, eosio::asset quantit
     auto itr = table.find(id);
     eosio::check(itr != table.end(), "The post doesn't exist");
     eosio::action(eosio::permission_level(_self, eosio::name("active")), get_first_receiver(),
-        eosio::name("transfer"), std::tuple(_self, to, quantity, std::string("Donation complete"))).send();
+        eosio::name("transfer"), std::tuple(_self, itr->user, quantity, std::string("Donation complete"))).send();
 }
