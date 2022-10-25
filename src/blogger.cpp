@@ -39,7 +39,7 @@ void blogger::ratepost(uint64_t id, eosio::name user, int rating){
 
 void blogger::on_transfer(eosio::name from, eosio::name to, eosio::asset quantity, std::string memo){
     if (to != _self) return;
-    uint64_t id = stoi(memo);
+    int id = stoi(memo);
     post_table table(_self, _self.value);
     auto itr = table.find(id);
     eosio::check(itr != table.end(), "The post doesn't exist");
